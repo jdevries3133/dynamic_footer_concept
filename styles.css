@@ -1,8 +1,9 @@
 :root {
   /* fine tune according to the amount of content in the center toolbar spot */
   --adjust-center-item-spacing: 58px;
-  --clr-primary: hsl(210deg 100% 54%);
-  --clr-secondary: hsl(210deg 100% 89%);
+  --articleOne: hsl(122deg 51% 69%);
+  --articleTwo: hsl(174deg 51% 69%);
+  --articleThree: hsl(222deg 51% 69%);
 }
 * {
   box-sizing: border-box;
@@ -11,8 +12,37 @@
   padding: 0;
 }
 
+main {
+  position: relative;
+  margin: auto;
+  max-width: 80ch;
+}
+
+article {
+  padding: 3vw;
+  margin-bottom: 2rem;
+}
+
+button {
+  font-size: 2rem;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+button:nth-child(1) {
+  background-color: var(--articleOne);
+}
+button:nth-child(2) {
+  background-color: var(--articleTwo);
+}
+
+button:nth-child(3) {
+  background-color: var(--articleThree);
+}
+
 h1 {
-  font-size: 2em;
+  font-size: 2rem;
   margin-bottom: 1.5rem;
 }
 
@@ -25,55 +55,35 @@ p {
   line-height: 1.4em;
 }
 
-article {
-  padding: 3vw;
-  margin-bottom: 2rem;
-}
-
-.container {
+article:nth-child(1) > h1 {
   position: relative;
-  margin: auto;
-  max-width: 80ch;
+  left: 9%;
+}
+article:nth-child(2) > h1 {
+  position: relative;
+  left: calc(50% - 3ch);
 }
 
-.toolbar {
+article:nth-child(3) > h1 {
+  position: relative;
+  left: calc(100% - 7ch);
+}
+
+article:nth-child(1) {
+  background-color: var(--articleOne);
+}
+article:nth-child(2) {
+  background-color: var(--articleTwo);
+}
+
+article:nth-child(3) {
+  background-color: var(--articleThree);
+}
+
+.dynamicFooter {
   position: fixed;
-  display: grid;
   bottom: 0;
-  height: 2.5em;
-  width: 100%;
-}
-
-.toolbar--threeItems {
-  grid-template-columns: 1fr 1.3fr 1fr;
-}
-
-.toolbar--twoItems {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.toolbar__child--main {
-  background-color: var(--clr-primary);
-}
-
-.toolbar__child--secondary {
-  background-color: var(--clr-secondary);
-}
-
-.fancyHeader--inToolbar {
-  z-index: 1;
-  position: fixed;
-  top: 95vh;
-}
-
-.fancyHeader--left {
-  left: 2vw;
-}
-.fancyHeader--center {
-  color: white;
-  left: calc(50% - var(--adjust-center-item-spacing));
-}
-
-.fancyHeader--right {
-  right: 2vw;
+  display: grid;
+  width: min(80ch, 100vw);
+  grid-template-columns: repeat(3, 1fr);
 }
