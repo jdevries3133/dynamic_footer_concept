@@ -1,15 +1,6 @@
-/**
- * Update the DOM depending on whatever article is in view. This removes
- * the Nth item from dynamicFooter and replaces it with an empty placebolder.
- *
- * Also, if null is passed, that means that none of the articles are
- * currently being viewed, and the dynamicFooter returns to it's original
- * state.
+/******************************************************************************
+ *    FOOTER CREATION AND MUTATION
  */
-function viewingArticle(articleIndex) {
-  destroyDynamicFooter();
-  createDynamicHeader(articleIndex);
-}
 
 /**
  * If omitIndex, we will leave an empty placeholder for that item in the
@@ -21,15 +12,14 @@ function createDynamicHeader(omitIndex = null) {
 
   const footerHtml = `
     ${[...headers]
-      .map((h, i) => {
-        console.log(i, omitIndex);
-        return i === omitIndex
+      .map((h, i) =>
+        i === omitIndex
           ? "<div></div>"
           : `
     <button id=${h.innerText + "MenuElement"}>
       ${h.innerText}
-    </button>`;
-      })
+    </button>`
+      )
       .join("")}
   `;
   const footer = document.createElement("div");
@@ -39,8 +29,57 @@ function createDynamicHeader(omitIndex = null) {
   container.appendChild(footer);
 }
 
-function destroyDynamicFooter() {
+function destroyDynamicHeader() {
   document.getElementById("dynamicFooter").remove();
 }
 
-document.addEventListener("DOMContentLoaded", () => createDynamicHeader());
+/**
+ * Update the DOM depending on whatever article is in view. This removes
+ * the Nth item from dynamicFooter and replaces it with an empty placebolder.
+ *
+ * Also, if null is passed, that means that none of the articles are
+ * currently being viewed, and the dynamicFooter returns to it's original
+ * state.
+ */
+function viewingArticle(articleIndex) {
+  destroyDynamicHeader();
+  createDynamicHeader(articleIndex);
+}
+
+/******************************************************************************
+ *    INTERSECTION OBSERVER, MUTATION TRIGGERS
+ */
+
+function onIntersect(entry) {
+  entry.forEach((event) => {
+    if (event.isIntersecting) {
+      // I've just tagged the index I'll need for the omitIndex onto the
+      // article element itself.
+      const omitIndex = parseInt(event.target.getAttribute("index"));
+      destroyDynamicHeader();
+      createDynamicHeader(omitIndex);
+    } else {
+      // refresh toolbar
+      destroyDynamicHeader();
+      createDynamicHeader();
+    }
+  });
+}
+
+function initObserver() {
+  const observer = new IntersectionObserver(onIntersect);
+  const targets = document.querySelectorAll("article");
+  targets.forEach((t, i) => {
+    // tag the index I'll need for the omitIndex onto the article element
+    // itself.
+    t.setAttribute("index", i);
+    observer.observe(t);
+  });
+}
+
+function onDomContentLoaded() {
+  createDynamicHeader();
+  initObserver();
+}
+
+document.addEventListener("DOMContentLoaded", onDomContentLoaded);
