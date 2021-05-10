@@ -50,16 +50,21 @@ function viewingArticle(articleIndex) {
  *    INTERSECTION OBSERVER, MUTATION TRIGGERS
  */
 
-function onIntersect(entry) {
-  entry.forEach((event) => {
+function onIntersect(entries) {
+  const articlesVisible = !!entries
+    .map((e) => e.isIntersecting)
+    .reduce((prev, cur) => prev | cur);
+  entries.forEach((event) => {
     if (event.isIntersecting) {
       // I've just tagged the index I'll need for the omitIndex onto the
       // article element itself.
       const omitIndex = parseInt(event.target.getAttribute("index"));
       destroyDynamicHeader();
       createDynamicHeader(omitIndex);
+    } else if (articlesVisible) {
+      return;
     } else {
-      // refresh toolbar
+      // no articles visible. Refresh toolbar
       destroyDynamicHeader();
       createDynamicHeader();
     }
